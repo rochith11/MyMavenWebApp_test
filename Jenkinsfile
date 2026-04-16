@@ -1,38 +1,42 @@
 pipeline {
-    agent any
+    agent any  
 
     tools {
-        maven 'Maven'
+        maven 'Maven'  
     }
-    
+
     stages {
-        stage ('Checkout') {
+        stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/rochith11/MyMavenWebApp_test.git'
+                git branch: 'master', url: 'https://github.com/rochith11/MyMavenWebApp_test'
             }
         }
-        stage ('Build')  {
+
+        stage('Build') {
             steps {
-                sh 'mvn clean install'
+                sh 'mvn clean package'
             }
         }
-        stage ('Archive') {
+
+        stage('Archive') {
             steps {
-                archiveArtifacts artifacts: 'target/*.war', fingerprints=true
+                archiveArtifacts artifacts: 'target/*.war', fingerprint: true
             }
         }
-        stage ('Deploy') {
-            steps { 
-                'mvn clean package'
+
+        stage('Deploy') {
+            steps {
+                sh 'mvn clean package'
             }
-        }
+        }    
     }
+
     post {
         success {
-            echo "Build Successful"
+            echo 'Build and deployment successful!'
         }
         failure {
-            echo "Build Failed"
+            echo 'Build failed!'
         }
     }
 }
